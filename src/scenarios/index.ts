@@ -10,10 +10,25 @@
  */
 
 import type { Category, Difficulty, Scenario } from "../engine/types";
+import { badDns } from "./bad-dns";
+import { crashLoopEnv } from "./crashloop-env";
+import { dbConnections } from "./db-connections";
 import { diskFull } from "./disk-full";
 import { expiredCert } from "./expired-cert";
+import { oom502 } from "./oom-502";
+import { sshLockout } from "./ssh-lockout";
+import { stuckCron } from "./stuck-cron";
 
-export const scenarios: Scenario[] = [diskFull, expiredCert];
+export const scenarios: Scenario[] = [
+  diskFull,
+  expiredCert,
+  badDns,
+  oom502,
+  crashLoopEnv,
+  stuckCron,
+  sshLockout,
+  dbConnections,
+];
 
 export const scenariosById = new Map(scenarios.map((scenario) => [scenario.id, scenario]));
 

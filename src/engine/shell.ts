@@ -272,6 +272,60 @@ const builtins: Record<string, Builtin> = {
     return out(`${body.split("\n").length} ${target}`);
   },
 
+  /**
+   * Just enough GNU sed for the incidents in this deck: substitute on one file,
+   * optionally in place (`sed -i 's/old/new/' /path`). Address expressions,
+   * ranges and the other ninety percent of sed are deliberately unsupported.
+   */
+  sed: ({ world, argv }) => {
+    const inPlace = argv.slice(1).some((arg) => /^-[a-zA-Z]*i/.test(arg));
+    const operands = argv.slice(1).filter((arg) => !arg.startsWith("-"));
+    if (operands.length < 2) return out("sed: no input files", "err");
+
+    const expression = operands[0];
+    const target = operands[operands.length - 1];
+    const path = resolvePath(world.cwd, target);
+    const body = world.files[path];
+    if (body === undefined) return out(`sed: can't read ${target}: No such file or directory`, "err");
+
+    const parsed = expression.match(/^s(.)(.*?)\1(.*?)\1([gi]*)$/);
+    if (!parsed) return out(`sed: -e expression #1, char 1: unknown command: '${expression[0] ?? ""}'`, "err");
+
+    const [, , pattern, replacement, flags] = parsed;
+    let matcher: RegExp;
+    try {
+      // sed treats ^ and $ as line anchors, so the multiline flag is correct.
+      matcher = new RegExp(pattern, flags.includes("g") ? "gm" : "m");
+    } catch {
+      return out(`sed: -e expression #1, char 1: invalid regular expression`, "err");
+    }
+
+    const result = body.replace(matcher, replacement);
+    if (!inPlace) return out(result);
+    world.files[path] = result;
+    return [];
+  },
+
+  kill: ({ world, argv }) => {
+    const pids = argv
+      .slice(1)
+      .filter((arg) => !arg.startsWith("-"))
+      .map(Number)
+      .filter((pid) => Number.isInteger(pid) && pid > 0);
+
+    if (!pids.length) {
+      return out("kill: usage: kill [-s sigspec | -n signum | -sigspec] pid | jobspec ...", "err");
+    }
+
+    const errors: string[] = [];
+    for (const pid of pids) {
+      const index = world.processes.findIndex((process) => process.pid === pid);
+      if (index === -1) errors.push(`bash: kill: (${pid}) - No such process`);
+      else world.processes.splice(index, 1);
+    }
+    return errors.length ? out(errors.join("\n"), "err") : [];
+  },
+
   grep: ({ world, argv }) => {
     const flags = argv.filter((a) => a.startsWith("-"));
     const rest = argv.slice(1).filter((a) => !a.startsWith("-"));
@@ -697,9 +751,10 @@ export function execute(scenario: Scenario, world: World, raw: string): ShellRes
 /* ------------------------------------------------------------------ */
 
 const COMMON_COMMANDS = [
-  "cat", "cd", "curl", "date", "df", "dig", "docker", "du", "free", "grep", "head",
-  "history", "hostname", "journalctl", "kubectl", "ls", "mkdir", "netstat", "nginx",
-  "openssl", "ping", "ps", "pwd", "rm", "ss", "systemctl", "tail", "top", "touch",
+  "cat", "cd", "curl", "date", "df", "dig", "dmesg", "docker", "du", "free", "grep",
+  "head", "history", "hostname", "journalctl", "kill", "kubectl", "ls", "mkdir",
+  "named-checkzone", "netstat", "nginx", "openssl", "ping", "ps", "psql", "pwd",
+  "rndc", "rm", "sed", "ss", "ssh", "sshd", "systemctl", "tail", "top", "touch",
   "truncate", "uptime", "wc", "whoami",
 ];
 

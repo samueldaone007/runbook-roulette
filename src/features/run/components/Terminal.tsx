@@ -153,40 +153,47 @@ export function Terminal({ run, onCommand, onClear }: TerminalProps) {
   };
 
   return (
-    <section className="terminal min-w-0" aria-label={`${run.scenario.hostname} simulated terminal`}>
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-[#3a3844] px-3 py-2">
+    <section className="console min-w-0" aria-label={`${run.scenario.hostname} simulated terminal`}>
+      <div className="console-head">
         <div className="flex items-center gap-2 font-mono text-[0.625rem] uppercase tracking-[0.14em] text-term-dim">
-          <span className="h-2 w-2 animate-blink rounded-full bg-alert" aria-hidden="true" />
+          <span className="led animate-blink" aria-hidden="true" />
           <span className="text-term">
             {run.scenario.user}@{run.scenario.hostname}
           </span>
           <span className="hidden sm:inline">/ simulated tty</span>
         </div>
-        <button type="button" className="btn btn-sm btn-ghost" onClick={onClear}>
-          Clear
-        </button>
+        <div className="flex items-center gap-2">
+          <span className="hidden font-mono text-[0.625rem] uppercase tracking-[0.14em] text-term-dim sm:inline">
+            pid 0341
+          </span>
+          <button type="button" className="btn btn-sm btn-ghost" onClick={onClear}>
+            Clear
+          </button>
+        </div>
       </div>
 
-      <div
-        ref={scrollRef}
-        className="terminal-body h-[380px] overflow-y-auto px-4 py-3 md:h-[440px]"
-        onClick={focusInput}
-        role="log"
-        aria-live="polite"
-        aria-label="Terminal output"
-        tabIndex={0}
-      >
-        {run.lines.map((line, index) => (
-          <p
-            key={index}
-            className={`whitespace-pre-wrap break-words ${kindClass(line.kind)}`}
-          >
-            {line.text || "\u00a0"}
-          </p>
-        ))}
+      <div className="console-screen">
+        <div
+          ref={scrollRef}
+          className="terminal-body h-[360px] overflow-y-auto px-4 py-4 md:h-[440px]"
+          onClick={focusInput}
+          role="log"
+          aria-live="polite"
+          aria-label="Terminal output"
+          tabIndex={0}
+        >
+          {run.lines.map((line, index) => (
+            <p
+              key={index}
+              className={`whitespace-pre-wrap break-words ${kindClass(line.kind)}`}
+            >
+              {line.text || "\u00a0"}
+            </p>
+          ))}
+        </div>
       </div>
 
-      <div className="border-t-2 border-[#3a3844] px-4 py-3">
+      <div className="border-t-2 border-ink-line bg-ink-soft px-4 py-3">
         <div className="flex items-start gap-2">
           <span className="term-cmd shrink-0 font-mono text-[0.78125rem]">{prompt}</span>
           <input
@@ -227,7 +234,7 @@ export function Terminal({ run, onCommand, onClear }: TerminalProps) {
                   applyCompletion(option);
                 }}
                 onKeyDown={onCompletionKeyDown}
-                className="border border-[#4a4756] px-1.5 py-1 font-mono text-[0.6875rem] text-term transition-colors hover:border-amber hover:text-amber"
+                className="border border-[#4a4756] px-2 py-1 font-mono text-[0.6875rem] text-term transition-colors hover:border-amber hover:text-amber"
               >
                 {option}
               </button>
@@ -240,7 +247,7 @@ export function Terminal({ run, onCommand, onClear }: TerminalProps) {
 
         <p
           id="terminal-help"
-          className="mt-2 font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-term-dim"
+          className="mt-2 font-mono text-[0.625rem] uppercase tracking-[0.14em] text-term-dim"
         >
           Tab completes · Esc leaves · ↑↓ history · fixes change the simulation
         </p>

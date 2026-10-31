@@ -56,7 +56,7 @@ export function HomeView({ records, onPlay, onNavigateProgress }: HomeViewProps)
         <div>
           <p className="eyebrow">Night shift simulator</p>
           <h1 className="mt-4 max-w-2xl font-display text-5xl font-bold uppercase leading-[0.88] tracking-tight sm:text-6xl lg:text-7xl">
-            It&apos;s 03:04.
+            It&apos;s 03:04.{" "}
             <br />
             <span className="text-violet">Something is broken.</span>
           </h1>
@@ -102,8 +102,10 @@ export function HomeView({ records, onPlay, onNavigateProgress }: HomeViewProps)
 
         <div className="panel mt-5 p-4">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-            <div>
-              <p className="mono-label">Category</p>
+            <div role="group" aria-labelledby="filter-category">
+              <p id="filter-category" className="mono-label">
+                Category
+              </p>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 <Chip active={category === "all"} onClick={() => setCategory("all")}>
                   All
@@ -120,8 +122,10 @@ export function HomeView({ records, onPlay, onNavigateProgress }: HomeViewProps)
               </div>
             </div>
 
-            <div>
-              <p className="mono-label">Heat</p>
+            <div role="group" aria-labelledby="filter-heat">
+              <p id="filter-heat" className="mono-label">
+                Heat
+              </p>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 <Chip active={difficulty === "all"} onClick={() => setDifficulty("all")}>
                   Any
@@ -142,7 +146,7 @@ export function HomeView({ records, onPlay, onNavigateProgress }: HomeViewProps)
               <button
                 type="button"
                 onClick={reset}
-                className="self-start font-mono text-[10px] uppercase tracking-[0.12em] underline decoration-2 underline-offset-4 hover:text-violet"
+                className="inline-flex min-h-6 items-center self-start font-mono text-[10px] uppercase tracking-[0.12em] underline decoration-2 underline-offset-4 hover:text-violet"
               >
                 Reset drawer
               </button>

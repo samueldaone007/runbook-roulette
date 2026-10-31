@@ -16,8 +16,27 @@ export default function App() {
   const controller = useRunController(recordRun);
   const { startRun, abandonRun } = controller;
 
+  const mainRef = useRef<HTMLElement>(null);
+  const firstRoute = useRef(true);
+
   const incidentId = route.name === "incident" ? route.id : null;
   const runId = controller.run?.scenario.id ?? null;
+
+  /**
+   * SPA route changes do not move focus. Without this, keyboard and screen
+   * reader users stay on a button that has just been removed from the page.
+   */
+  useEffect(() => {
+    if (firstRoute.current) {
+      firstRoute.current = false;
+      return;
+    }
+    const heading = mainRef.current?.querySelector<HTMLElement>("h1");
+    // An incident page has no heading until its run boots; `runId` re-runs this.
+    if (!heading) return;
+    if (!heading.hasAttribute("tabindex")) heading.setAttribute("tabindex", "-1");
+    heading.focus();
+  }, [route, runId]);
 
   /**
    * Submitting or abandoning sets `run` to null before the hash change lands.
@@ -82,13 +101,24 @@ export default function App() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <a
+        href="#main-content"
+        className="skip-link"
+        onClick={(event) => {
+          event.preventDefault();
+          mainRef.current?.focus();
+        }}
+      >
+        Skip to main content
+      </a>
+
       <SiteHeader
         active={route.name === "incident" ? "incident" : route.name === "progress" ? "progress" : "home"}
         onNavigateHome={goHome}
         onNavigateProgress={goProgress}
       />
 
-      <main className="flex-1">
+      <main id="main-content" ref={mainRef} tabIndex={-1} className="flex-1">
         {route.name === "home" ? (
           <HomeView
             records={records}

@@ -48,7 +48,7 @@ export function IncidentView({
         <button
           type="button"
           onClick={quit}
-          className="font-mono text-[10px] uppercase tracking-[0.14em] underline decoration-2 underline-offset-4 hover:text-violet"
+          className="inline-flex min-h-6 items-center font-mono text-[10px] uppercase tracking-[0.14em] underline decoration-2 underline-offset-4 hover:text-violet"
         >
           Abandon incident
         </button>
@@ -63,6 +63,7 @@ export function IncidentView({
 
       <div className="mt-6">
         <DiagnosisForm
+          key={run.scenario.id}
           scenario={run.scenario}
           elapsedSeconds={run.elapsedSeconds}
           hintsUsed={run.hintsUsed}

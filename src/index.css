@@ -12,7 +12,8 @@
 
   --color-ink: #1c1b22;
   --color-ink-soft: #2b2933;
-  --color-ink-faint: #6f6a5f;
+  /* 5.4:1 on cream, 6.0:1 on paper. Small mono labels live on both. */
+  --color-ink-faint: #635c51;
 
   --color-amber: #ffb400;
   --color-amber-deep: #d99a00;
@@ -64,6 +65,25 @@
   .terminal :focus-visible {
     outline-color: var(--color-amber);
   }
+
+  /* Programmatic page-heading focus is a reading aid, not a control. */
+  [tabindex="-1"]:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -86,6 +106,28 @@
   .panel-flat {
     border: 2px solid var(--color-ink);
     background: var(--color-cream);
+  }
+
+  /* Visible on keyboard focus only; jumps past the sticky site header. */
+  .skip-link {
+    position: fixed;
+    left: 0.75rem;
+    top: 0.75rem;
+    z-index: 60;
+    transform: translateY(-200%);
+    border: 3px solid var(--color-ink);
+    background: var(--color-amber);
+    padding: 0.5rem 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    box-shadow: 3px 3px 0 0 var(--color-ink);
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
   }
 
   .panel-dark {
@@ -157,6 +199,7 @@
 
   .tag-amber {
     background: var(--color-amber);
+    color: var(--color-ink);
   }
 
   .tag-violet {
@@ -305,8 +348,17 @@
     padding: 0.7rem 0.8rem;
   }
 
+  .stat-sub {
+    color: var(--color-ink-faint);
+  }
+
   .stat-amber {
     background: var(--color-amber);
+  }
+
+  .stat-amber .mono-label,
+  .stat-amber .stat-sub {
+    color: var(--color-ink);
   }
 
   .stat-violet {
@@ -316,7 +368,7 @@
 
   .stat-violet .mono-label,
   .stat-violet .stat-sub {
-    color: #e6ddff;
+    color: var(--color-cream);
   }
 
   .stat-ink {
@@ -357,6 +409,7 @@
 
   .terminal-input {
     width: 100%;
+    min-height: 1.5rem;
     border: 0;
     background: transparent;
     color: var(--color-term);
@@ -364,6 +417,12 @@
     font-size: 12.5px;
     outline: none;
     caret-color: var(--color-amber);
+  }
+
+  /* `outline: none` above must not erase the keyboard focus ring. */
+  .terminal-input:focus-visible {
+    outline: 2px solid var(--color-amber);
+    outline-offset: 2px;
   }
 
   .term-cmd {

@@ -303,7 +303,11 @@ export function DebriefView({
           </div>
 
           {result.entries.length ? (
-            <ol className="mt-3 max-h-80 space-y-2 overflow-y-auto pr-1">
+            <ol
+              className="mt-3 max-h-80 space-y-2 overflow-y-auto pr-1"
+              tabIndex={0}
+              aria-label="Your command timeline"
+            >
               {result.entries.map((entry, index) => (
                 <li
                   key={`${index}-${entry.command}`}
@@ -336,7 +340,11 @@ export function DebriefView({
             <span className="tag tag-amber">Optimal path</span>
           </div>
 
-          <ol className="mt-3 max-h-80 space-y-2 overflow-y-auto pr-1">
+          <ol
+            className="mt-3 max-h-80 space-y-2 overflow-y-auto pr-1"
+            tabIndex={0}
+            aria-label="Senior replay commands"
+          >
             {replay.map((row, index) => (
               <li
                 key={`${index}-${row.command}`}
@@ -462,7 +470,7 @@ export function DebriefView({
       <div className="mt-8 border-[3px] border-ink bg-amber p-5 shadow-[6px_6px_0_0_#1C1B22]">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="mono-label">Next page</p>
+            <p className="mono-label text-ink">Next page</p>
             <p className="mt-1 font-display text-2xl font-bold uppercase tracking-tight">
               The pager never sleeps.
             </p>

@@ -18,6 +18,7 @@ export function DiagnosisForm({
 }: DiagnosisFormProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const [note, setNote] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   return (
     <section className="panel-paper p-5 md:p-6" aria-labelledby="diagnosis-heading">
@@ -43,7 +44,10 @@ export function DiagnosisForm({
         </div>
       </div>
 
-      <fieldset className="mt-5">
+      <fieldset
+        className="mt-5"
+        aria-describedby={error ? "diagnosis-error" : undefined}
+      >
         <legend className="mono-label mb-2">Root cause</legend>
         <div className="grid gap-2 md:grid-cols-2">
           {scenario.options.map((option) => {
@@ -60,7 +64,10 @@ export function DiagnosisForm({
                   name="root-cause"
                   value={option.id}
                   checked={active}
-                  onChange={() => setSelected(option.id)}
+                  onChange={() => {
+                    setSelected(option.id);
+                    setError(null);
+                  }}
                   className="peer sr-only"
                 />
                 <span
@@ -102,15 +109,29 @@ export function DiagnosisForm({
       </div>
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t-2 border-ink/20 pt-4">
-        <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-faint">
-          Wrong call = no pass, however fast you were.
-        </p>
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-faint">
+            Wrong call = no pass, however fast you were.
+          </p>
+          {error ? (
+            <p
+              id="diagnosis-error"
+              role="alert"
+              className="mt-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-alert"
+            >
+              {error}
+            </p>
+          ) : null}
+        </div>
         <button
           type="button"
           className="btn btn-ink"
-          disabled={!selected}
           onClick={() => {
-            if (selected) onSubmit(selected, note);
+            if (!selected) {
+              setError("Pick a root cause before submitting.");
+              return;
+            }
+            onSubmit(selected, note);
           }}
         >
           Submit diagnosis →

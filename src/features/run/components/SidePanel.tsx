@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { formatClock } from "../../../engine/scoring";
 import type { ActiveRun } from "../types";
 
@@ -9,11 +10,17 @@ interface SidePanelProps {
 
 /** Clock, real state, scratchpad, hint. Everything that is not the terminal. */
 export function SidePanel({ run, onHint, onNotes }: SidePanelProps) {
+  const hintRef = useRef<HTMLParagraphElement>(null);
   const overPar = run.elapsedSeconds > run.scenario.parSeconds;
   const progress = Math.min(
     100,
     Math.round((run.elapsedSeconds / run.scenario.parSeconds) * 100),
   );
+
+  /* The reveal button disappears; move focus to the text it produced. */
+  useEffect(() => {
+    if (run.hintVisible) hintRef.current?.focus({ preventScroll: true });
+  }, [run.hintVisible]);
 
   return (
     <aside className="space-y-4" aria-label="Incident side panel">
@@ -86,18 +93,25 @@ export function SidePanel({ run, onHint, onNotes }: SidePanelProps) {
           <span className="tag tag-ink">−6 pts</span>
         </div>
         {run.hintVisible ? (
-          <>
-            <p className="mt-2 font-mono text-xs leading-relaxed">{run.scenario.hint}</p>
+          <div role="status">
+            <p ref={hintRef} tabIndex={-1} className="mt-2 font-mono text-xs leading-relaxed">
+              {run.scenario.hint}
+            </p>
             <p className="mt-3 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-faint">
               Hint spent. Back to work.
             </p>
-          </>
+          </div>
         ) : (
           <>
-            <p className="mt-2 font-mono text-[11px] leading-relaxed text-ink-faint">
-              Stuck? One nudge per run. It comes out of your score, not your pride.
+            <p id="hint-cost" className="mt-2 font-mono text-[11px] leading-relaxed text-ink-faint">
+              Stuck? One nudge per run. It costs 6 points, not your pride.
             </p>
-            <button type="button" className="btn btn-amber btn-sm mt-3 w-full" onClick={onHint}>
+            <button
+              type="button"
+              className="btn btn-amber btn-sm mt-3 w-full"
+              onClick={onHint}
+              aria-describedby="hint-cost"
+            >
               Reveal hint
             </button>
           </>

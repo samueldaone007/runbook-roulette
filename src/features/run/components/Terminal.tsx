@@ -38,15 +38,16 @@ export function Terminal({ run, onCommand, onClear }: TerminalProps) {
   const [completions, setCompletions] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const completionRef = useRef<HTMLDivElement>(null);
 
   const prompt = formatPrompt(run.scenario, run.world);
 
-  /* A new incident gets a clean input line. */
+  /* A new incident gets a clean input line. The page heading takes focus on
+     route changes, so the pager alert is heard before the terminal. */
   useEffect(() => {
     setInput("");
     setCursor(null);
     setCompletions([]);
-    inputRef.current?.focus();
   }, [run.scenario.id]);
 
   /* Keep the newest output in view, without yanking the page. */
@@ -61,7 +62,7 @@ export function Terminal({ run, onCommand, onClear }: TerminalProps) {
     setInput("");
     setCursor(null);
     setCompletions([]);
-    inputRef.current?.focus();
+    inputRef.current?.focus({ preventScroll: true });
   };
 
   const applyCompletion = (option: string) => {
@@ -90,6 +91,13 @@ export function Terminal({ run, onCommand, onClear }: TerminalProps) {
     }
 
     if (event.key === "ArrowDown") {
+      // ArrowDown normally walks history; while the suggestions are open it
+      // walks into them instead.
+      if (completions.length > 0) {
+        event.preventDefault();
+        completionRef.current?.querySelector("button")?.focus();
+        return;
+      }
       event.preventDefault();
       if (cursor === null) return;
       const next = cursor + 1;
@@ -105,6 +113,11 @@ export function Terminal({ run, onCommand, onClear }: TerminalProps) {
     }
 
     if (event.key === "Tab") {
+      // Tab is command completion only while there is something to complete.
+      // Once the suggestions are on screen a second Tab hands focus to them,
+      // so they are reachable without a mouse. An empty input keeps normal
+      // focus movement and Shift+Tab always escapes: no keyboard trap.
+      if (event.shiftKey || !input.trim() || completions.length > 0) return;
       event.preventDefault();
       const result = complete(run.scenario, run.world, input);
       if (result.options.length === 1) {
@@ -113,7 +126,24 @@ export function Terminal({ run, onCommand, onClear }: TerminalProps) {
       } else {
         setCompletions(result.options.slice(0, 10));
       }
+      return;
     }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      setCompletions([]);
+      inputRef.current?.blur();
+      return;
+    }
+  };
+
+  /* Escape inside the suggestion row returns to the input rather than the top
+     of the page, so a keyboard user is never stranded in the terminal footer. */
+  const onCompletionKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (event.key !== "Escape") return;
+    event.preventDefault();
+    setCompletions([]);
+    inputRef.current?.focus();
   };
 
   const focusInput = () => {
@@ -144,6 +174,7 @@ export function Terminal({ run, onCommand, onClear }: TerminalProps) {
         role="log"
         aria-live="polite"
         aria-label="Terminal output"
+        tabIndex={0}
       >
         {run.lines.map((line, index) => (
           <p
@@ -178,7 +209,12 @@ export function Terminal({ run, onCommand, onClear }: TerminalProps) {
         </div>
 
         {completions.length > 0 ? (
-          <div className="mt-2 flex flex-wrap items-center gap-1.5">
+          <div
+            ref={completionRef}
+            className="mt-2 flex flex-wrap items-center gap-1.5"
+            role="group"
+            aria-label="Command completions"
+          >
             <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-term-dim">
               tab:
             </span>
@@ -190,11 +226,15 @@ export function Terminal({ run, onCommand, onClear }: TerminalProps) {
                   event.stopPropagation();
                   applyCompletion(option);
                 }}
-                className="border border-[#4a4756] px-1.5 py-0.5 font-mono text-[11px] text-term transition-colors hover:border-amber hover:text-amber"
+                onKeyDown={onCompletionKeyDown}
+                className="border border-[#4a4756] px-1.5 py-1 font-mono text-[11px] text-term transition-colors hover:border-amber hover:text-amber"
               >
                 {option}
               </button>
             ))}
+            <span className="sr-only" role="status">
+              {completions.length} command completions. Press Tab to reach them, Escape to close.
+            </span>
           </div>
         ) : null}
 
@@ -202,7 +242,7 @@ export function Terminal({ run, onCommand, onClear }: TerminalProps) {
           id="terminal-help"
           className="mt-2 font-mono text-[9px] uppercase tracking-[0.14em] text-term-dim"
         >
-          Tab completes · ↑↓ history · fixes change the simulation
+          Tab completes · Esc leaves · ↑↓ history · fixes change the simulation
         </p>
       </div>
     </section>

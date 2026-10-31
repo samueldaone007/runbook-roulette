@@ -109,9 +109,9 @@ export function StatCard({
   return (
     <div className={`stat-card${accent === "cream" ? "" : ` stat-${accent}`}`}>
       <p className="mono-label">{label}</p>
-      <p className="mt-1 font-display text-2xl font-bold leading-none sm:text-3xl">{value}</p>
+      <p className="mt-1 whitespace-nowrap font-display text-2xl font-bold leading-none sm:text-3xl">{value}</p>
       {sub ? (
-        <p className="stat-sub mt-1 font-mono text-[9px] uppercase tracking-[0.1em] text-ink-faint">
+        <p className="stat-sub mt-1 font-mono text-[9px] uppercase tracking-[0.1em]">
           {sub}
         </p>
       ) : null}

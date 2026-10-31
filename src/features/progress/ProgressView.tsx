@@ -47,7 +47,7 @@ export function ProgressView({ records, onPlay, onGoHome, onClear }: ProgressVie
           <button
             type="button"
             onClick={clear}
-            className="inline-flex min-h-6 items-center font-mono text-[0.625rem] uppercase tracking-[0.12em] underline decoration-2 underline-offset-4 hover:text-alert"
+            className="inline-flex min-h-6 items-center font-mono text-[0.625rem] uppercase tracking-[0.12em] underline decoration-2 underline-offset-4 hover:text-alert-deep"
           >
             Clear history
           </button>

@@ -34,7 +34,7 @@ export function SidePanel({ run, onHint, onNotes }: SidePanelProps) {
         </div>
         <p
           className={`mt-1 font-mono text-4xl font-bold tabular-nums ${
-            overPar ? "text-alert" : "text-ink"
+            overPar ? "text-alert-deep" : "text-ink"
           }`}
         >
           {formatClock(run.elapsedSeconds)}

@@ -20,6 +20,9 @@
   --color-violet: #6c3df4;
   --color-violet-soft: #cbb9ff;
   --color-alert: #ff3b30;
+  /* 5.3:1 on cream: error text and over-par numbers need a darker red than the
+     banner fill, which is only ever used behind ink text. */
+  --color-alert-deep: #b3261e;
 
   --color-term: #e9e4d6;
   --color-term-dim: #8e8998;
@@ -351,7 +354,9 @@
   }
 
   .field::placeholder {
-    color: #918b7d;
+    /* 5.4:1 — placeholders are hints, but they should still be readable. */
+    color: var(--color-ink-faint);
+    opacity: 1;
   }
 
   .field:focus {
@@ -436,6 +441,11 @@
     font-size: 0.78125rem;
     outline: none;
     caret-color: var(--color-amber);
+  }
+
+  .terminal-input::placeholder {
+    color: var(--color-term-dim);
+    opacity: 1;
   }
 
   /* `outline: none` above must not erase the keyboard focus ring. */

@@ -127,7 +127,7 @@ export function DiagnosisForm({
             <p
               id="diagnosis-error"
               role="alert"
-              className="mt-1 font-mono text-[0.625rem] font-bold uppercase tracking-[0.12em] text-alert"
+              className="mt-1 font-mono text-[0.625rem] font-bold uppercase tracking-[0.12em] text-alert-deep"
             >
               {error}
             </p>

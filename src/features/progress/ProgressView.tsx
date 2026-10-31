@@ -47,7 +47,7 @@ export function ProgressView({ records, onPlay, onGoHome, onClear }: ProgressVie
           <button
             type="button"
             onClick={clear}
-            className="inline-flex min-h-6 items-center font-mono text-[10px] uppercase tracking-[0.12em] underline decoration-2 underline-offset-4 hover:text-alert"
+            className="inline-flex min-h-6 items-center font-mono text-[0.625rem] uppercase tracking-[0.12em] underline decoration-2 underline-offset-4 hover:text-alert"
           >
             Clear history
           </button>
@@ -68,7 +68,7 @@ export function ProgressView({ records, onPlay, onGoHome, onClear }: ProgressVie
         </div>
       ) : (
         <>
-          <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+          <div className="mt-6 grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(9rem,1fr))]">
             <StatCard label="Runs" value={records.length} sub="logged" />
             <StatCard label="Pass rate" value={`${rate}%`} sub="all time" accent="amber" />
             <StatCard
@@ -84,8 +84,8 @@ export function ProgressView({ records, onPlay, onGoHome, onClear }: ProgressVie
             />
           </div>
 
-          <div className="mt-6 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
-            <section className="panel p-5" aria-labelledby="weak-heading">
+          <div className="mt-6 flex flex-wrap gap-5">
+            <section className="panel min-w-0 flex-[1_1_30rem] p-5" aria-labelledby="weak-heading">
               <div className="flex items-center justify-between gap-3">
                 <h2
                   id="weak-heading"
@@ -108,14 +108,14 @@ export function ProgressView({ records, onPlay, onGoHome, onClear }: ProgressVie
                     <div className={`meter mt-1.5 ${stat.rate < 60 ? "meter-amber" : ""}`}>
                       <span style={{ width: `${stat.rate}%` }} />
                     </div>
-                    <p className="mt-1 font-mono text-[10px] text-ink-faint">
+                    <p className="mt-1 font-mono text-[0.625rem] text-ink-faint">
                       {stat.passes}/{stat.runs} passed
                     </p>
                   </div>
                 ))}
               </div>
 
-              <p className="mt-4 border-t-2 border-ink/15 pt-3 font-mono text-[10px] leading-relaxed text-ink-faint">
+              <p className="mt-4 border-t-2 border-ink/15 pt-3 font-mono text-[0.625rem] leading-relaxed text-ink-faint">
                 Lowest pass rate first. Categories appear once you have played them.
               </p>
             </section>
@@ -142,10 +142,10 @@ export function ProgressView({ records, onPlay, onGoHome, onClear }: ProgressVie
                         {index + 1}
                       </span>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate font-display text-sm font-bold">
+                        <p className="break-words font-display text-sm font-bold">
                           {record.title}
                         </p>
-                        <p className="font-mono text-[10px] text-ink-faint">
+                        <p className="font-mono text-[0.625rem] text-ink-faint">
                           {formatWhen(record.completedAt)} ·{" "}
                           {CATEGORY_LABELS[record.category]}
                         </p>
@@ -186,10 +186,10 @@ export function ProgressView({ records, onPlay, onGoHome, onClear }: ProgressVie
                     className="history-row flex flex-wrap items-center gap-x-4 gap-y-2 border-b-2 border-ink/10 px-4 py-3 last:border-0"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="truncate font-display text-sm font-bold">
+                      <p className="break-words font-display text-sm font-bold">
                         {record.title}
                       </p>
-                      <p className="font-mono text-[10px] text-ink-faint">
+                      <p className="font-mono text-[0.625rem] text-ink-faint">
                         {formatWhen(record.completedAt)} ·{" "}
                         {CATEGORY_LABELS[record.category]} ·{" "}
                         {record.hintsUsed === 0
@@ -204,7 +204,7 @@ export function ProgressView({ records, onPlay, onGoHome, onClear }: ProgressVie
 
                     <div className="text-right font-mono text-xs tabular-nums">
                       <p className="font-bold">{record.total}/100</p>
-                      <p className="text-[10px] text-ink-faint">
+                      <p className="text-[0.625rem] text-ink-faint">
                         {formatClock(record.elapsedSeconds)}
                       </p>
                     </div>

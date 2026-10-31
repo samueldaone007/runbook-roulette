@@ -52,8 +52,10 @@ export function HomeView({ records, onPlay, onNavigateProgress }: HomeViewProps)
       {/* ---------------------------------------------------------- */}
       {/* Hero                                                       */}
       {/* ---------------------------------------------------------- */}
-      <section className="grid gap-8 lg:grid-cols-[1.12fr_0.88fr] lg:items-start">
-        <div>
+      {/* Flex with rem bases, not a px breakpoint: at 200% text the two halves
+          wrap instead of squeezing the board until its stats clip. */}
+      <section className="flex flex-wrap gap-8">
+        <div className="min-w-0 flex-[1_1_32rem]">
           <p className="eyebrow">Night shift simulator</p>
           <h1 className="mt-4 max-w-2xl font-display text-5xl font-bold uppercase leading-[0.88] tracking-tight sm:text-6xl lg:text-7xl">
             It&apos;s 03:04.{" "}
@@ -68,15 +70,17 @@ export function HomeView({ records, onPlay, onNavigateProgress }: HomeViewProps)
           <div className="mt-7">
             <SpinLever onSpin={spin} disabled={pool.length === 0} poolCount={pool.length} />
           </div>
-          <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.16em] text-ink-faint">
+          <p className="mt-3 font-mono text-[0.625rem] uppercase tracking-[0.16em] text-ink-faint">
             Page received. Coffee not included.
           </p>
         </div>
 
-        <MachinePanel
-          records={records}
-          onNavigateProgress={onNavigateProgress}
-        />
+        <div className="min-w-0 flex-[1_1_26rem]">
+          <MachinePanel
+            records={records}
+            onNavigateProgress={onNavigateProgress}
+          />
+        </div>
       </section>
 
       <div className="hazard my-10" aria-hidden="true" />
@@ -95,7 +99,7 @@ export function HomeView({ records, onPlay, onNavigateProgress }: HomeViewProps)
               The incident deck
             </h2>
           </div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-faint">
+          <p className="font-mono text-[0.625rem] uppercase tracking-[0.14em] text-ink-faint">
             {pool.length} of {scenarios.length} incidents loaded
           </p>
         </div>
@@ -122,9 +126,9 @@ export function HomeView({ records, onPlay, onNavigateProgress }: HomeViewProps)
               </div>
             </div>
 
-            <div role="group" aria-labelledby="filter-heat">
-              <p id="filter-heat" className="mono-label">
-                Heat
+            <div role="group" aria-labelledby="filter-difficulty">
+              <p id="filter-difficulty" className="mono-label">
+                Difficulty
               </p>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 <Chip active={difficulty === "all"} onClick={() => setDifficulty("all")}>
@@ -146,7 +150,7 @@ export function HomeView({ records, onPlay, onNavigateProgress }: HomeViewProps)
               <button
                 type="button"
                 onClick={reset}
-                className="inline-flex min-h-6 items-center self-start font-mono text-[10px] uppercase tracking-[0.12em] underline decoration-2 underline-offset-4 hover:text-violet"
+                className="inline-flex min-h-6 items-center self-start font-mono text-[0.625rem] uppercase tracking-[0.12em] underline decoration-2 underline-offset-4 hover:text-violet"
               >
                 Reset drawer
               </button>
@@ -155,42 +159,53 @@ export function HomeView({ records, onPlay, onNavigateProgress }: HomeViewProps)
         </div>
 
         {pool.length ? (
-          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-5 grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
             {pool.map((scenario) => (
-              <button
-                key={scenario.id}
-                type="button"
-                onClick={() => onPlay(scenario)}
-                className="scenario-card group"
-              >
+              <li key={scenario.id} className="scenario-card group relative">
                 <div className="flex flex-wrap items-center gap-1.5">
                   <span className="tag tag-amber">{CATEGORY_LABELS[scenario.category]}</span>
                   <span className="tag">{DIFFICULTY_LABELS[scenario.difficulty]}</span>
-                  <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.1em] text-ink-faint">
+                  <span className="ml-auto font-mono text-[0.625rem] uppercase tracking-[0.1em] text-ink-faint">
                     par {formatClock(scenario.parSeconds)}
                   </span>
                 </div>
 
                 <div>
+                  {/* The heading stays a heading; the link inside it names the
+                      card. A stretched ::after makes the whole card clickable
+                      without a click-handling div. */}
                   <h3 className="font-display text-lg font-bold leading-tight">
-                    {scenario.title}
+                    <a
+                      href={`#/incident/${scenario.id}`}
+                      onClick={(event) => {
+                        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                        event.preventDefault();
+                        onPlay(scenario);
+                      }}
+                      className="card-link decoration-2 underline-offset-4 group-hover:underline group-focus-within:underline"
+                    >
+                      {scenario.title}
+                    </a>
                   </h3>
-                  <p className="mt-1 line-clamp-2 font-mono text-[11px] leading-relaxed text-ink-faint">
+                  <p className="mt-1 line-clamp-2 font-mono text-[0.6875rem] leading-relaxed text-ink-faint">
                     {scenario.alert.service} · {scenario.alert.symptom}
                   </p>
                 </div>
 
                 <div className="mt-auto flex items-center justify-between border-t-2 border-ink/15 pt-3">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.12em]">
+                  <span className="font-mono text-[0.625rem] uppercase tracking-[0.12em]">
                     {scenario.alert.severity} · {scenario.goodSteps.length} key checks
                   </span>
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] group-hover:text-violet">
+                  <span
+                    aria-hidden="true"
+                    className="font-mono text-[0.625rem] font-bold uppercase tracking-[0.12em] group-hover:text-violet"
+                  >
                     Play →
                   </span>
                 </div>
-              </button>
+              </li>
             ))}
-          </div>
+          </ul>
         ) : (
           <div className="mt-5">
             <div className="border-[3px] border-dashed border-ink bg-cream/60 px-5 py-8 text-center">
@@ -237,7 +252,7 @@ export function HomeView({ records, onPlay, onNavigateProgress }: HomeViewProps)
             },
           ].map((step, index) => (
             <article key={step.title} className="panel p-5">
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-faint">
+              <p className="font-mono text-[0.625rem] uppercase tracking-[0.16em] text-ink-faint">
                 0{index + 1}
               </p>
               <h3 className="mt-2 font-display text-xl font-bold uppercase tracking-tight">
@@ -272,7 +287,7 @@ function Chip({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`border-2 border-ink px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.1em] transition-colors ${
+      className={`chip border-2 border-ink px-2.5 py-1 font-mono text-[0.625rem] uppercase tracking-[0.1em] transition-colors ${
         active ? "bg-ink text-cream" : "bg-cream hover:bg-paper"
       }`}
     >
@@ -297,7 +312,7 @@ function MachinePanel({
     <div className="panel overflow-hidden">
       <div className="hazard-thin" aria-hidden="true" />
       <div className="p-5">
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="mono-label">Tonight&apos;s board</p>
             <p className="mt-1 font-display text-lg font-bold uppercase leading-none">
@@ -313,7 +328,7 @@ function MachinePanel({
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-3 gap-2">
+        <div className="mt-4 grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(7.5rem,1fr))]">
           <StatCard label="Runs" value={records.length} sub="logged" />
           <StatCard label="Pass rate" value={`${rate}%`} sub="all time" />
           <StatCard
@@ -330,7 +345,7 @@ function MachinePanel({
             <div className="mt-1 flex items-center justify-between gap-2">
               <div className="min-w-0">
                 <p className="truncate font-display text-sm font-bold">{last.title}</p>
-                <p className="font-mono text-[10px] text-ink-faint">
+                <p className="font-mono text-[0.625rem] text-ink-faint">
                   {formatWhen(last.completedAt)} · {last.total}/100
                 </p>
               </div>

@@ -14,9 +14,15 @@ export function SiteHeader({ active, onNavigateHome, onNavigateProgress }: SiteH
   return (
     <header className="sticky top-0 z-40 border-b-[3px] border-ink bg-cream/95 backdrop-blur-[2px]">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4">
-        <button
-          type="button"
-          onClick={onNavigateHome}
+        {/* A real link, so the browser shows a destination and modified clicks
+            can open a new tab. The handler keeps the SPA's in-place navigation. */}
+        <a
+          href="#/"
+          onClick={(event) => {
+            if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            event.preventDefault();
+            onNavigateHome();
+          }}
           className="group flex items-center gap-3 text-left"
           aria-label="Runbook Roulette home"
         >
@@ -29,23 +35,24 @@ export function SiteHeader({ active, onNavigateHome, onNavigateProgress }: SiteH
             </span>
             <span className="mono-label hidden sm:block">Incident response practice</span>
           </span>
-        </button>
+        </a>
 
         <div className="flex items-center gap-2">
-          <span className="hidden items-center gap-2 border-2 border-ink bg-cream px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] md:inline-flex">
+          <span className="hidden items-center gap-2 border-2 border-ink bg-cream px-2 py-1 font-mono text-[0.625rem] uppercase tracking-[0.14em] md:inline-flex">
             <span className="inline-block h-2 w-2 animate-blink rounded-full bg-alert" aria-hidden="true" />
             Simulated · nothing real runs
           </span>
           <nav className="flex items-center gap-1" aria-label="Main">
-            <NavButton
+            <NavLink
+              href="#/"
               active={active === "home" || active === "incident"}
               onClick={onNavigateHome}
             >
               Play
-            </NavButton>
-            <NavButton active={active === "progress"} onClick={onNavigateProgress}>
+            </NavLink>
+            <NavLink href="#/progress" active={active === "progress"} onClick={onNavigateProgress}>
               Progress
-            </NavButton>
+            </NavLink>
           </nav>
         </div>
       </div>
@@ -53,29 +60,35 @@ export function SiteHeader({ active, onNavigateHome, onNavigateProgress }: SiteH
   );
 }
 
-function NavButton({
+function NavLink({
+  href,
   active,
   onClick,
   children,
 }: {
+  href: string;
   active: boolean;
   onClick: () => void;
   children: ReactNode;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
+    <a
+      href={href}
+      onClick={(event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        onClick();
+      }}
       aria-current={active ? "page" : undefined}
       className={[
-        "border-2 px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.12em] transition-colors",
+        "nav-link border-2 px-3 py-1.5 font-mono text-[0.6875rem] uppercase tracking-[0.12em] transition-colors",
         active
-          ? "border-ink bg-amber text-ink shadow-[2px_2px_0_0_#1C1B22]"
+          ? "border-ink bg-amber font-bold text-ink shadow-[2px_2px_0_0_#1C1B22]"
           : "border-transparent text-ink hover:border-ink hover:bg-cream-deep",
       ].join(" ")}
     >
       {children}
-    </button>
+    </a>
   );
 }
 
@@ -83,7 +96,7 @@ export function SiteFooter() {
   return (
     <footer className="mt-16">
       <div className="hazard" aria-hidden="true" />
-      <div className="mx-auto flex max-w-6xl flex-col justify-between gap-2 px-4 py-6 font-mono text-[10px] uppercase tracking-[0.14em] text-ink-faint sm:flex-row">
+      <div className="mx-auto flex max-w-6xl flex-col justify-between gap-2 px-4 py-6 font-mono text-[0.625rem] uppercase tracking-[0.14em] text-ink-faint sm:flex-row">
         <p>Runbook Roulette · a simulator, not a production terminal</p>
         <p>Page received. Coffee not included.</p>
       </div>
@@ -111,7 +124,7 @@ export function StatCard({
       <p className="mono-label">{label}</p>
       <p className="mt-1 whitespace-nowrap font-display text-2xl font-bold leading-none sm:text-3xl">{value}</p>
       {sub ? (
-        <p className="stat-sub mt-1 font-mono text-[9px] uppercase tracking-[0.1em]">
+        <p className="stat-sub mt-1 font-mono text-[0.5625rem] uppercase tracking-[0.1em]">
           {sub}
         </p>
       ) : null}

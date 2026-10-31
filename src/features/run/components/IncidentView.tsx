@@ -48,7 +48,7 @@ export function IncidentView({
         <button
           type="button"
           onClick={quit}
-          className="inline-flex min-h-6 items-center font-mono text-[10px] uppercase tracking-[0.14em] underline decoration-2 underline-offset-4 hover:text-violet"
+          className="inline-flex min-h-6 items-center font-mono text-[0.625rem] uppercase tracking-[0.14em] underline decoration-2 underline-offset-4 hover:text-violet"
         >
           Abandon incident
         </button>
@@ -56,9 +56,13 @@ export function IncidentView({
 
       <AlertBanner scenario={run.scenario} />
 
-      <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_330px]">
-        <Terminal run={run} onCommand={onCommand} onClear={onClear} />
-        <SidePanel run={run} onHint={onHint} onNotes={onNotes} />
+      <div className="mt-5 flex flex-wrap gap-5">
+        <div className="min-w-0 flex-[1_1_34rem]">
+          <Terminal run={run} onCommand={onCommand} onClear={onClear} />
+        </div>
+        <div className="min-w-0 flex-[0_1_22rem]">
+          <SidePanel run={run} onHint={onHint} onNotes={onNotes} />
+        </div>
       </div>
 
       <div className="mt-6">

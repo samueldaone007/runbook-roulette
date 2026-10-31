@@ -42,7 +42,7 @@ export function SidePanel({ run, onHint, onNotes }: SidePanelProps) {
         <div className="meter meter-amber mt-3">
           <span style={{ width: `${progress}%` }} />
         </div>
-        <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-faint">
+        <p className="mt-2 font-mono text-[0.625rem] uppercase tracking-[0.12em] text-ink-faint">
           Par {formatClock(run.scenario.parSeconds)} · speed is 15 points
         </p>
       </div>
@@ -61,7 +61,7 @@ export function SidePanel({ run, onHint, onNotes }: SidePanelProps) {
             {run.world.fixed ? "Service healthy" : "Still broken"}
           </p>
         </div>
-        <p className="mt-2 font-mono text-[10px] leading-relaxed text-ink-faint">
+        <p className="mt-2 font-mono text-[0.625rem] leading-relaxed text-ink-faint">
           {run.world.fixed
             ? "The simulation agrees: you actually fixed it."
             : "The terminal agrees with the pager. Keep digging."}
@@ -97,13 +97,13 @@ export function SidePanel({ run, onHint, onNotes }: SidePanelProps) {
             <p ref={hintRef} tabIndex={-1} className="mt-2 font-mono text-xs leading-relaxed">
               {run.scenario.hint}
             </p>
-            <p className="mt-3 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-faint">
+            <p className="mt-3 font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-ink-faint">
               Hint spent. Back to work.
             </p>
           </div>
         ) : (
           <>
-            <p id="hint-cost" className="mt-2 font-mono text-[11px] leading-relaxed text-ink-faint">
+            <p id="hint-cost" className="mt-2 font-mono text-[0.6875rem] leading-relaxed text-ink-faint">
               Stuck? One nudge per run. It costs 6 points, not your pride.
             </p>
             <button

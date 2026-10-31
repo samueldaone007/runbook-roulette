@@ -84,6 +84,25 @@
       transition-duration: 0.001ms !important;
     }
   }
+
+  /* Windows High Contrast and similar modes drop backgrounds, so every state
+     that relied on a fill needs an outline or border that survives. */
+  @media (forced-colors: active) {
+    .chip[aria-pressed="true"],
+    .nav-link[aria-current="page"] {
+      outline: 2px solid ButtonText;
+      outline-offset: 2px;
+    }
+
+    .scenario-card,
+    .panel,
+    .panel-paper,
+    .panel-dark,
+    .tag,
+    .stat-card {
+      border-color: CanvasText;
+    }
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -119,7 +138,7 @@
     background: var(--color-amber);
     padding: 0.5rem 0.9rem;
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 0.6875rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -139,7 +158,7 @@
 
   .mono-label {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 0.625rem;
     line-height: 1.4;
     letter-spacing: 0.16em;
     text-transform: uppercase;
@@ -151,7 +170,7 @@
     align-items: center;
     gap: 0.5rem;
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 0.6875rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--color-ink);
@@ -190,7 +209,7 @@
     background: var(--color-cream);
     padding: 2px 7px;
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 0.625rem;
     line-height: 1.4;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -221,7 +240,7 @@
     background: var(--color-amber);
     padding: 2px 8px;
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 0.6875rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     transform: rotate(-2deg);
@@ -392,7 +411,7 @@
 
   .terminal-body {
     font-family: var(--font-mono);
-    font-size: 12.5px;
+    font-size: 0.78125rem;
     line-height: 1.6;
     scrollbar-width: thin;
     scrollbar-color: #4a4756 transparent;
@@ -414,7 +433,7 @@
     background: transparent;
     color: var(--color-term);
     font-family: var(--font-mono);
-    font-size: 12.5px;
+    font-size: 0.78125rem;
     outline: none;
     caret-color: var(--color-amber);
   }
@@ -531,7 +550,7 @@
     display: block;
     margin-top: 4px;
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 0.625rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
   }
@@ -540,7 +559,7 @@
     margin-left: auto;
     align-self: flex-end;
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 0.625rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     white-space: nowrap;
@@ -573,6 +592,19 @@
   .scenario-card:active {
     transform: translate(2px, 2px);
     box-shadow: 2px 2px 0 0 var(--color-ink);
+  }
+
+  /* The deck card is a list item with one stretched title link: the whole card
+     is clickable, the heading survives, and the link has a short name. */
+  .card-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  .scenario-card:has(.card-link:focus-visible) {
+    outline: 3px solid var(--color-violet);
+    outline-offset: 3px;
   }
 
   .meter {
@@ -632,7 +664,7 @@
     background: var(--color-amber);
     box-shadow: 3px 3px 0 0 var(--color-ink);
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: 0.8125rem;
     font-weight: 700;
     letter-spacing: -0.06em;
   }

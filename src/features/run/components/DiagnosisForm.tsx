@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { formatClock } from "../../../engine/scoring";
 import type { Scenario } from "../../../engine/types";
 
@@ -19,6 +19,14 @@ export function DiagnosisForm({
   const [selected, setSelected] = useState<string | null>(null);
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const firstOptionRef = useRef<HTMLInputElement>(null);
+
+  /* A failed submit moves the user to the choice they still have to make, not
+     just to a message. The alert is announced either way. */
+  const requireChoice = () => {
+    setError("Pick a root cause before submitting.");
+    firstOptionRef.current?.focus();
+  };
 
   return (
     <section className="panel-paper p-5 md:p-6" aria-labelledby="diagnosis-heading">
@@ -44,13 +52,10 @@ export function DiagnosisForm({
         </div>
       </div>
 
-      <fieldset
-        className="mt-5"
-        aria-describedby={error ? "diagnosis-error" : undefined}
-      >
+      <fieldset className="mt-5">
         <legend className="mono-label mb-2">Root cause</legend>
         <div className="grid gap-2 md:grid-cols-2">
-          {scenario.options.map((option) => {
+          {scenario.options.map((option, index) => {
             const active = selected === option.id;
             return (
               <label
@@ -60,6 +65,7 @@ export function DiagnosisForm({
                 }`}
               >
                 <input
+                  ref={index === 0 ? firstOptionRef : undefined}
                   type="radio"
                   name="root-cause"
                   value={option.id}
@@ -68,6 +74,8 @@ export function DiagnosisForm({
                     setSelected(option.id);
                     setError(null);
                   }}
+                  aria-invalid={error ? true : undefined}
+                  aria-describedby={error ? "diagnosis-error" : undefined}
                   className="peer sr-only"
                 />
                 <span
@@ -76,14 +84,16 @@ export function DiagnosisForm({
                     active ? "bg-ink" : "bg-paper"
                   }`}
                 >
-                  {active ? <span className="h-2 w-2 bg-amber" /> : null}
+                  {active ? (
+                    <span className="text-[0.7rem] font-bold leading-none text-amber">✓</span>
+                  ) : null}
                 </span>
                 <span>
                   <span className="block font-display text-sm font-bold leading-snug">
                     {option.label}
                   </span>
                   {option.detail ? (
-                    <span className="mt-1 block font-mono text-[10px] leading-relaxed text-ink-faint">
+                    <span className="mt-1 block font-mono text-[0.625rem] leading-relaxed text-ink-faint">
                       {option.detail}
                     </span>
                   ) : null}
@@ -110,14 +120,14 @@ export function DiagnosisForm({
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t-2 border-ink/20 pt-4">
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-faint">
+          <p className="font-mono text-[0.625rem] uppercase tracking-[0.12em] text-ink-faint">
             Wrong call = no pass, however fast you were.
           </p>
           {error ? (
             <p
               id="diagnosis-error"
               role="alert"
-              className="mt-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-alert"
+              className="mt-1 font-mono text-[0.625rem] font-bold uppercase tracking-[0.12em] text-alert"
             >
               {error}
             </p>
@@ -128,7 +138,7 @@ export function DiagnosisForm({
           className="btn btn-ink"
           onClick={() => {
             if (!selected) {
-              setError("Pick a root cause before submitting.");
+              requireChoice();
               return;
             }
             onSubmit(selected, note);

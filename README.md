@@ -318,17 +318,28 @@ Grotesk and JetBrains Mono. No gradients, no glassmorphism.
 
 Accessibility is treated as part of the product, not a QA pass:
 
-- Skip link, `main#main-content`, and focus moved to each route's `h1`.
+- Native semantics first: real links for navigation and deck cards, a real `<ul>`
+  deck with each card's title as its link, and a heading hierarchy that survives
+  an accessibility-tree dump. Nothing clickable is a `div`.
+- Skip link, `main#main-content`, focus moved to each route's `h1`, and
+  `aria-current="page"` on the active nav link.
 - No keyboard trap: the terminal takes Tab completion only while there is text
   to complete; Shift+Tab and Escape always leave; suggestion chips are
   reachable and announce themselves.
 - Scrolling regions (terminal output, command timelines) are focusable.
-- Form errors are announced inline instead of disabling the submit button.
+- Form errors are announced inline instead of disabling the submit button; a
+  failed submit marks the radios `aria-invalid`, focuses the first option, and
+  the chosen option gets a check glyph rather than colour alone.
 - Hints move focus to the revealed text so it is not silently inserted above.
 - WCAG AA contrast on all text, visible focus rings on dark surfaces, 24px
-  minimum targets, and `prefers-reduced-motion` support.
+  minimum targets, `prefers-reduced-motion`, and a `forced-colors` block so
+  selected chips, the active nav link and panel borders stay visible in Windows
+  High Contrast.
+- Type is sized in `rem` and layouts use `rem`-based flex bases and `auto-fit`
+  grids, so 200% text sizing wraps the hero and stats instead of clipping them;
+  no horizontal scrolling at 320px, 200% zoom, or a 32px root font size.
 - Audited with axe-core (0 violations on home, incident, hint, debrief and
-  progress) plus a manual keyboard walkthrough.
+  progress) plus manual keyboard, forced-colors and text-resize passes.
 
 ## Licence
 

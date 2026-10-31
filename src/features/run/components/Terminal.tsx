@@ -155,7 +155,7 @@ export function Terminal({ run, onCommand, onClear }: TerminalProps) {
   return (
     <section className="terminal min-w-0" aria-label={`${run.scenario.hostname} simulated terminal`}>
       <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-[#3a3844] px-3 py-2">
-        <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-term-dim">
+        <div className="flex items-center gap-2 font-mono text-[0.625rem] uppercase tracking-[0.14em] text-term-dim">
           <span className="h-2 w-2 animate-blink rounded-full bg-alert" aria-hidden="true" />
           <span className="text-term">
             {run.scenario.user}@{run.scenario.hostname}
@@ -188,7 +188,7 @@ export function Terminal({ run, onCommand, onClear }: TerminalProps) {
 
       <div className="border-t-2 border-[#3a3844] px-4 py-3">
         <div className="flex items-start gap-2">
-          <span className="term-cmd shrink-0 font-mono text-[12.5px]">{prompt}</span>
+          <span className="term-cmd shrink-0 font-mono text-[0.78125rem]">{prompt}</span>
           <input
             ref={inputRef}
             value={input}
@@ -215,7 +215,7 @@ export function Terminal({ run, onCommand, onClear }: TerminalProps) {
             role="group"
             aria-label="Command completions"
           >
-            <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-term-dim">
+            <span className="font-mono text-[0.625rem] uppercase tracking-[0.12em] text-term-dim">
               tab:
             </span>
             {completions.map((option) => (
@@ -227,7 +227,7 @@ export function Terminal({ run, onCommand, onClear }: TerminalProps) {
                   applyCompletion(option);
                 }}
                 onKeyDown={onCompletionKeyDown}
-                className="border border-[#4a4756] px-1.5 py-1 font-mono text-[11px] text-term transition-colors hover:border-amber hover:text-amber"
+                className="border border-[#4a4756] px-1.5 py-1 font-mono text-[0.6875rem] text-term transition-colors hover:border-amber hover:text-amber"
               >
                 {option}
               </button>
@@ -240,7 +240,7 @@ export function Terminal({ run, onCommand, onClear }: TerminalProps) {
 
         <p
           id="terminal-help"
-          className="mt-2 font-mono text-[9px] uppercase tracking-[0.14em] text-term-dim"
+          className="mt-2 font-mono text-[0.5625rem] uppercase tracking-[0.14em] text-term-dim"
         >
           Tab completes · Esc leaves · ↑↓ history · fixes change the simulation
         </p>

@@ -93,14 +93,14 @@ export function DebriefView({
       {/* Verdict header                                             */}
       {/* ---------------------------------------------------------- */}
       <div className="panel mt-4 overflow-hidden">
-        <div className="grid md:grid-cols-[180px_minmax(0,1fr)]">
+        <div className="grid md:grid-cols-[11rem_minmax(0,1fr)]">
           <div
             className={`flex items-center justify-between gap-3 border-b-[3px] border-ink p-5 md:flex-col md:justify-center md:border-b-0 md:border-r-[3px] md:text-center ${
               result.passed ? "bg-amber" : "bg-ink text-cream"
             }`}
           >
             <p
-              className={`font-mono text-[10px] uppercase tracking-[0.2em] ${
+              className={`font-mono text-[0.625rem] uppercase tracking-[0.2em] ${
                 result.passed ? "" : "text-term-dim"
               }`}
             >
@@ -135,7 +135,7 @@ export function DebriefView({
               </div>
               <div className="flex items-baseline gap-2 md:flex-col md:items-end md:gap-0">
                 <p className="font-display text-6xl font-bold leading-none">{result.total}</p>
-                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-faint">
+                <p className="font-mono text-[0.625rem] uppercase tracking-[0.16em] text-ink-faint">
                   / 100
                 </p>
               </div>
@@ -313,7 +313,7 @@ export function DebriefView({
                   key={`${index}-${entry.command}`}
                   className="flex gap-3 border-b border-ink/10 pb-2 last:border-0"
                 >
-                  <span className="shrink-0 font-mono text-[10px] tabular-nums text-ink-faint">
+                  <span className="shrink-0 font-mono text-[0.625rem] tabular-nums text-ink-faint">
                     {formatClock(entry.atSeconds)}
                   </span>
                   <code className="min-w-0 break-words font-mono text-xs">
@@ -350,18 +350,18 @@ export function DebriefView({
                 key={`${index}-${row.command}`}
                 className="flex items-start gap-3 border-b border-[#3a3844] pb-2 last:border-0"
               >
-                <span className="w-5 shrink-0 font-mono text-[10px] text-term-dim">
+                <span className="w-5 shrink-0 font-mono text-[0.625rem] text-term-dim">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <code
-                  className={`min-w-0 flex-1 break-words font-mono text-[11px] ${
+                  className={`min-w-0 flex-1 break-words font-mono text-[0.6875rem] ${
                     row.ran ? "text-term-ok" : "text-term"
                   }`}
                 >
                   {row.command}
                 </code>
                 {row.ran ? (
-                  <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.12em] text-term-ok">
+                  <span className="shrink-0 font-mono text-[0.5625rem] uppercase tracking-[0.12em] text-term-ok">
                     ran
                   </span>
                 ) : null}
@@ -369,7 +369,7 @@ export function DebriefView({
             ))}
           </ol>
 
-          <p className="mt-3 border-t border-[#3a3844] pt-2 font-mono text-[9px] uppercase tracking-[0.12em] text-term-dim">
+          <p className="mt-3 border-t border-[#3a3844] pt-2 font-mono text-[0.5625rem] uppercase tracking-[0.12em] text-term-dim">
             Matching commands are highlighted
           </p>
         </section>
@@ -399,7 +399,7 @@ export function DebriefView({
               {result.safety.mistakes.map((mistake) => (
                 <li key={mistake.label} className="border-l-4 border-amber pl-3">
                   <p className="font-display text-sm font-bold">{mistake.label}</p>
-                  <p className="mt-1 font-mono text-[11px] leading-relaxed text-ink-faint">
+                  <p className="mt-1 font-mono text-[0.6875rem] leading-relaxed text-ink-faint">
                     {mistake.why}
                   </p>
                 </li>
@@ -427,7 +427,7 @@ export function DebriefView({
               {result.investigation.found.length ? (
                 <ul className="mt-2 space-y-1.5">
                   {result.investigation.found.map((label) => (
-                    <li key={label} className="flex gap-2 font-mono text-[11px] leading-snug">
+                    <li key={label} className="flex gap-2 font-mono text-[0.6875rem] leading-snug">
                       <span className="text-violet" aria-hidden="true">
                         +
                       </span>
@@ -436,7 +436,7 @@ export function DebriefView({
                   ))}
                 </ul>
               ) : (
-                <p className="mt-2 font-mono text-[11px] text-ink-faint">Nothing yet.</p>
+                <p className="mt-2 font-mono text-[0.6875rem] text-ink-faint">Nothing yet.</p>
               )}
             </div>
 
@@ -447,7 +447,7 @@ export function DebriefView({
                   {result.investigation.missed.map((label) => (
                     <li
                       key={label}
-                      className="flex gap-2 font-mono text-[11px] leading-snug text-ink-faint"
+                      className="flex gap-2 font-mono text-[0.6875rem] leading-snug text-ink-faint"
                     >
                       <span aria-hidden="true">−</span>
                       {label}
@@ -455,7 +455,7 @@ export function DebriefView({
                   ))}
                 </ul>
               ) : (
-                <p className="mt-2 font-mono text-[11px] text-violet">
+                <p className="mt-2 font-mono text-[0.6875rem] text-violet">
                   Full coverage. Nothing missed.
                 </p>
               )}
@@ -522,7 +522,7 @@ function ScoreLine({
       <div className={`${meterClass} mt-1.5`}>
         <span style={{ width: `${Math.max(0, Math.min(100, Math.round(percent)))}%` }} />
       </div>
-      <p className="mt-1 font-mono text-[10px] leading-snug text-ink-faint">{note}</p>
+      <p className="mt-1 font-mono text-[0.625rem] leading-snug text-ink-faint">{note}</p>
     </div>
   );
 }
